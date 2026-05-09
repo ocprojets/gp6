@@ -9,9 +9,9 @@ NUM_SAMPLES = SAMPLE_RATE * DURATION
 PERIOD_US   = 1_000_000 // SAMPLE_RATE   # 125 µs entre samples
 
 # === Hardware ===
-mic = ADC(Pin(26))                  # GP26 = ADC0, entrée micro
-spk = PWM(Pin(15))                  # GP15 vers filtre RC + LM386
-spk.freq(60_000)                    # porteuse 60 kHz, inaudible
+mic = ADC(Pin(26))                  # GP26 = ADC0, entrée micro /// pin20 physique
+spk = PWM(Pin(15))                  # GP15 vers filtre RC + LM386 /// pin31 physique
+spk.freq(60000)                    # porteuse 60 kHz, inaudible
 spk.duty_u16(32768)                 # silence = duty 50%
 
 led = Pin(25, Pin.OUT)              # Pico classique. Si Pico W : Pin("LED", Pin.OUT)
