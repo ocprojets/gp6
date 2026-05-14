@@ -7,7 +7,7 @@
     header {
         padding: 0;
         background-color: #243c6e;
-        text-align: center;
+        text-align: left;
         display: flex;
     }
 
@@ -22,13 +22,20 @@
 
     .logo-box {
         max-width: 64px;
-        max-height: 64px
+        max-height: 64px;
+        position: relative;
     }
 
     .logo {
         max-width: 64px;
         max-height: 64px;
         position: relative;
+    }
+
+    .logo-text {
+        margin: 0 0 0 16px;
+        text-align: left;
+        font-size: 30px;
     }
 
     .current-page {

@@ -1,24 +1,24 @@
 <html>
   <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../style.css">
   </head>
   <header>
     <nav>
       <ul>
         <h1 class="logo-box">
-          <img class="logo" src="web-pages/img/rn-logo.jpg">
+          <img class="logo" src="../img/rn-logo.jpg">
         </h1>
         <h1 class="logo-text">
           Projet Informatique 2026, 2e semestre - Nuri Grasser et Raphael Aye
         </h1>
         <li>
-          <a  class="current-page">Acceuil</a>
+          <a class="navlink" href="../../index.html">Acceuil</a>
         </li>
         <li>
-          <a class="navlink" href="web-pages/Hardware/index.html">Hardware</a>
+          <a class="current-page">Hardware</a>
         </li>
         <li>
-          <a class="navlink" href="web-pages/Software/index.html">Software</a>
+          <a class="navlink" href="../Software/index.html">Software</a>
         </li>
       </ul>
     </nav>
@@ -32,21 +32,21 @@
           Ci-dessous ce trouve un schéma du montage expérimental du talkie walkie dont nous allons expliquer le fonctionnement au cours 
           de cette page. Nous allons donc commencer par donner une explication de chacun des composant du talkie walkie. 
         </p>
-        <img class="img" src="web-pages/img/schema.png"></img>
+        <img class="img" src="../img/schema.png"></img>
         <h2>Raspberry Pi Pico H</h2>
-        <img class="img" src="web-pages/img/raspberry-schema.png"></img>
+        <img class="img" src="../img/raspberry-schema.png"></img>
         <p>
           Le Raspberry Pi Pico H est le centre du talkie-walkie étant donné que c'est dans le chip de ce dernier que l'on effectue l'exécution 
           du programe et tous les calculs relatif au transmition radio.
         </p>
         <h2>Module Microphone Arduino Analogue MODUL2</h2>
-        <img class="img" src="web-pages/img/micro.jpg"></img>
+        <img class="img" src="../img/micro.jpg"></img>
         <p>
           Le module microphone de Arduino comnposé de trois PIN que nous allons utiliser pour notre projet. Le 'AO' (Analog output) qui transmet 
           le son enregistré, 'G' (Ground) et enfin l'alimentation, signalée par un '+'.
         </p>
         <h2>Amplificateur audio LM386</h2>
-        <img class="img" src="web-pages/img/LM386.png"></img>
+        <img class="img" src="../img/LM386.png"></img>
         <p>
           Le LM386 fait ce qui est dans le nom: l'amplificateur audio, amplifie l'audio analogue qu'il reçoit.
         </p>
