@@ -1,19 +1,56 @@
 <style>
 
+    html {
+        padding: 0;
+    }
+
+    header {
+        padding: 0;
+        background-color: #243c6e;
+        text-align: center;
+        display: flex;
+    }
+
+    ul {
+        display: inline-block;
+    }
+
+    li {
+        padding: 16px;
+        align-items: center;
+        display: inline-block;
+    }
+
+    .logo-box {
+        max-width: 64px;
+        max-height: 64px
+    }
+
+    .logo {
+        max-width: 64px;
+        max-height: 64px;
+        position: relative;
+    }
+
     body {
-       background: #EADDCA;
+       backgroun-color: #14213d;
        font-family: chaparral-pro, serif;
        font-size: 15px;
-       margin: 0;
-       color: #6c5c3e;
+       color: #ffffff;
+       margin: 0 0 0 0;
+       padding: 0;
     }
 
     .wrapper {
-       background: #EADDCA;
-       margin: 0 auto 0;
-       max-width: 1440px;
+       background: #14213d;
+       margin: 0 0 0 0;
+       padding: 20px;
     }
 
+    .content-main {
+        margin: 48px auto 0 ;
+        max-width: 1080px;
+    }
 
     .img {
         margin: 16px;
@@ -22,6 +59,7 @@
     h1 {
         font-size: 48px;
         margin: 16px;
+        text-align: center;
     }
 
     h2 {
@@ -30,7 +68,8 @@
     }
 
     p {
-        margin: 16px;
+        margin: 16px 0 16px 16px;
+        text-align: justify;
     }
 
 </style>
