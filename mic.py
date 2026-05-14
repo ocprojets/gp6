@@ -32,15 +32,46 @@ for i in range(NUM_SAMPLES):
         pass
     buffer[i] = mic.read_u16()
 
+
+min_val = min(buffer)
+max_val = max(buffer)
+avg_val = sum(buffer) // len(buffer)
+variance = max_val - min_val
+
+print(f"Min={min_val}  Max={max_val}  Avg={avg_val}  Écart={variance}")
+
 led.off()
 print("Fin enregistrement")
 time.sleep(1)
+
 
 # === Lecture ===
 led.on()
 print(">> PLAY")
 
-start = time.ticks_us()
+# peak = 0
+# baseline = 65535
+# 
+# for i in range(NUM_SAMPLES):
+#     v = buffer[i]
+#     if v > 100:             # ignorer le silence écrêté
+#         if v > peak:
+#             peak = v
+#         if v < baseline:
+#             baseline = v
+# 
+# center = (peak + baseline) // 2
+# amplitude = peak - center
+# 
+# if amplitude < 1:
+#     amplitude = 1
+# 
+# gain = 26000 // amplitude   # cibler ~80% de la plage
+# 
+# print(f"center={center} peak={peak} gain=x{gain}")
+
+# Modifier le buffer en place, sans créer de nouvelle liste
+
 for i in range(NUM_SAMPLES):
     target = time.ticks_add(start, i * PERIOD_US)
     while time.ticks_diff(target, time.ticks_us()) > 0:
