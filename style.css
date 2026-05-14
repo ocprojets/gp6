@@ -17,7 +17,6 @@
 
     li {
         padding: 16px;
-        align-items: center;
         display: inline-block;
     }
 
@@ -30,6 +29,20 @@
         max-width: 64px;
         max-height: 64px;
         position: relative;
+    }
+
+    .current-page {
+        font-size: 20px;
+    }
+
+    .navlink {
+        color: white;
+        text-decoration: none;
+    }
+
+    .navlink:hover {
+        font-size: 20px;
+        position: initial;
     }
 
     body {
