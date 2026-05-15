@@ -53,7 +53,7 @@
     }
 
     body {
-       backgroun-color: #14213d;
+       background-color: #14213d;
        font-family: chaparral-pro, serif;
        font-size: 15px;
        color: #ffffff;
@@ -62,8 +62,6 @@
     }
 
     .wrapper {
-       background: #14213d;
-       margin: 0 0 0 0;
        padding: 20px;
     }
 
@@ -73,7 +71,8 @@
     }
 
     .img {
-        margin: 16px;
+        display: block;
+        margin: 16px auto 16px auto;
     }
 
     h1 {
@@ -87,9 +86,32 @@
         margin: 16px;
     }
 
+    .link {
+        color: white;
+        text-decoration: none;
+    }
+
+    .link:hover {
+        text-decoration: underline;
+    }
+
     p {
         margin: 16px 0 16px 16px;
         text-align: justify;
+    }
+
+
+
+    footer {
+        margin: 0;
+        padding: 16px;
+        background-color: #284179;
+        font-size: 12px;
+    }
+
+    .footer-wrap {
+        max-width: 1080px;
+        margin: 16px auto 0 ;
     }
 
 </style>
