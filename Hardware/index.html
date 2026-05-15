@@ -49,7 +49,7 @@
           son.
         </p>
 
-        <img class="img" src="../img/schema.png"></img>
+        <img class="img" src="../img/schema.png">
 
         <p class="comment">
           Ci-dessus vous trouvez le schéma simplifié du talkie-walkie. La batterie est connectée à un interupteur qui sera ignoré dans l'explication du circuit (parce-qu'il ne sert qu'à arrêter 
@@ -57,7 +57,7 @@
         </p>
 
         <h2>Raspberry Pi Pico H</h2>
-        <img class="img" src="../img/raspberry-schema.png"></img>
+        <img class="img" src="../img/raspberry-schema.png">
         <p class="comment">
           Seul le GP15 et GP26 sont utilisés dans notre circuit, en plus du 3V3OUT et le VBUS pour l'alimentation de l'amplificateur audio et du micro. Il est important 
           de noter qu'il n'y a pas de réel raison pour laquelle nous avons utilisé le GP15 et GP26 plutôt que d'autres pins.
@@ -72,20 +72,53 @@
         </p>
 
         <h2>Module Microphone Arduino Analogue MODUL2 (SE019)</h2>
-        <img class="img" src="../img/micro.jpg"></img>
+        <img class="img" src="../img/micro.jpg">
         <p class="comment">
-          Le module microphone comme vous le voyez ici possède quatre pins. Les plus intéressants sont le pin AO (analogue) et DO (digital). Expliqué ci-dessous.
+          Le module microphone comme vous le voyez ici possède quatre pins. Les plus intéressants sont le pin A0 (analogue) et D0 (digital). Expliqué ci-dessous.
         </p>
         <p>
-          Le module microphone de Arduino comnposé de quatre PIN que nous avons tous essayer d'utiliser à un moment de ce projet utiliser pour notre projet. Le 'AO' 
-          (Analog output) qui transmet le son enregistré, 'G' (Ground) et enfin l'alimentation, signalée par un '+'. Le pin AO transmet le son qu'il capture sous 
-          la forme d'un signal éléctronique qu'il nous est possible d'enregistré et de retransmettre à notre haut-parleur.
+          Le module microphone de Arduino comnposé de quatre PIN que nous avons tous essayer d'utiliser à un moment de ce projet utiliser pour notre projet. 
+          En plus de ces pins, le gros boitier bleu est un potentiomètre qui est connecté au reste du module selon le schéma ci-dessous:
+        </p>
+
+        <img class="img" src="../img/micro-module-schematic.png">
+        <p class="comment">
+          Il faut noter que ce schematic n'est pas 100% juste. Le potentiomètre ici ne devrais pas influencer le pin AO, mais après avoir testé, il s'avère que ce pin est 
+          bel et bien influencer par ce potentiomètre. Le reste du schéma est parfaitement correct. En bref, le potentiomètre permet de faire 1. varier la différence entre 
+          un signal audio fort et faible pour le pin A0, et 2. si on utilise le pin D0 il sert à changer le niveau sonore nécessaire pour envoyer un signal éléctrique.
+        </p>
+
+        <p>
+          'G' (Ground) est la terre du microphone et enfin l'alimentation, est signalée par un '+'. Le pin A0 transmet le son qu'il capture sous la forme d'un signal 
+          éléctronique qu'il nous est possible d'enregistrer et de retransmettre à notre haut-parleur. Ce pin était très problématique à utiliser car la qualité audio 
+          étant terrible (logique c'est un micro à 2.-) souvent il ne transmettait que des sons extrêmement fort (p.exemple si l'on souffle dessus). Après avoir chercher 
+          à calibrer le potentiomètre pour voir si cela pourrait avoir une influence, il s'est avérer que non.
+        </p>
+
+        <p>
+          Une fois que je me suis rendu compte qu'il m'était impossible d'enregistrer du son comme ma voix, j'ai essayer de faire en sorte que si le signal analogue dépassait 
+          un certain seuil (lu sur la Raspberry), il effectue une action. Malheureusement la sensibilité extrême du signal couplé au fait que les cables ne transmettent pas 
+          sans bruit le signal, le nombre de faux positifs était extrêmement élevé. Raison pour laquelle au final je me suis replié sur le D0 qui ne fonctionne que avec un 
+          signal '0' et '1' (S'il y a un son supérieur au seuil réglé par le potentiomètre il envoie un signal sinon il n'y a rien). 
+        </p>
+
+        <img class="img" src="../img/mic-ao.png">
+        <p class="comment">
+          Ci-dessus une situation ou on souffle sur le micro avec le pin A0.
+        </p>
+        <img class="img" src="../img/mic-do.png">
+        <p class="comment">
+          Ici une situation où on tape des mains, pin D0. Comme vous pouvez le voir, le A0 a plein de pics aléatoire, ce sont des faux positifs. Il nous est impossible 
+          d'utiliser ceci de manière efficace pour détecter des claps. (Précision: La légende de 8000/s est fausse c'est toujours 1000/s)
         </p>
 
         <h2>Amplificateur audio LM386</h2>
         <img class="img" src="../img/LM386.png"></img>
         <p>
-          Le LM386 fait ce qui est dans le nom: l'amplificateur audio, amplifie l'audio analogue qu'il reçoit.
+          Le LM386 fait ce qui est dans le nom: l'amplificateur audio, amplifie l'audio analogue qu'il reçoit. On peut régler les gains de l'audio soit en plaçant un 
+          condensateur ou une resistance (voir les deux entre les pins 1 et 8). Le bypass n'est pas d'une utilité particulièrement *utile* pour notre application donc nous 
+          le laissons de coté. Le input négatif (input - sur le schematic) doit être connecté au ground (un signal audio vient toujour sous la forme de deux cables). 
+          L'input positif à la sortie audio sur le Raspberry Pico.
         </p>
       </div>
 
