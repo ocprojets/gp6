@@ -101,6 +101,16 @@
         text-align: justify;
     }
 
+    .comment {
+        line-height: normal;
+        color: #d3eaff;
+        text-decoration: dotted;
+        display: block;
+        margin: 16px auto 16px auto;
+        max-width: 50%;
+
+    }
+
     footer {
         margin: 0;
         padding: 16px;

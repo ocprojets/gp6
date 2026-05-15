@@ -17,7 +17,7 @@
 
 
         <li>
-          <a class="navlink" href="../index.html">Acceuil</a>
+          <a class="navlink" href="../">Accueil</a>
         </li>
 
 
@@ -27,7 +27,7 @@
 
 
         <li>
-          <a class="navlink" href="../Software/index.html">Software</a>
+          <a class="navlink" href="../Software/">Software</a>
         </li>
 
       </ul>
@@ -40,25 +40,46 @@
       <div class ="content-main">
         <title>Projet GP06 - Hardware</title>
 
-        <h1>Projet informatique 2026, 2e semestre - Nuri Grasser et Raphael Aie</h1>
+        <h1>Explication du hardware</h1>
         <p>
-          Ci-dessous ce trouve un schéma du montage expérimental du talkie walkie dont nous allons expliquer le fonctionnement au cours 
-          de cette page. Nous allons donc commencer par donner une explication de chacun des composant du talkie walkie. 
+          Ci-dessous ce trouve un schéma du montage expérimental du talkie walkie qui était le but original de notre projet, 
+          dont nous allons, dans un premier temps, expliquer le fonctionnement au cours de ce circuit au long de cette page. Nous allons donc commencer par donner une explication de chacun des composant du talkie walkie. 
+          Dans un deuxième temps nous expliquerons le fonctionnement du projet final, bien qu'il soit très similaire, nous donnerons des indications sur les différences entres les deux systèmes, 
+          nottament au niveau des filtres du microphone qui ne sont pas présent et du différent pin utilisé sur le micro afin de ne pas avoir de difficultés en ce qui conecerne la détection du 
+          son.
         </p>
+
         <img class="img" src="../img/schema.png"></img>
+
+        <p class="comment">
+          Ci-dessus vous trouvez le schéma simplifié du talkie-walkie. La batterie est connectée à un interupteur qui sera ignoré dans l'explication du circuit (parce-qu'il ne sert qu'à arrêter 
+          l'alimentation). Le reste du schéma sera expliqué plus bas sur la page.
+        </p>
 
         <h2>Raspberry Pi Pico H</h2>
         <img class="img" src="../img/raspberry-schema.png"></img>
-        <p>
-          Le Raspberry Pi Pico H est le centre du talkie-walkie étant donné que c'est dans le chip de ce dernier que l'on effectue l'exécution 
-          du programe et tous les calculs relatif au transmition radio.
+        <p class="comment">
+          Seul le GP15 et GP26 sont utilisés dans notre circuit, en plus du 3V3OUT et le VBUS pour l'alimentation de l'amplificateur audio et du micro. Il est important 
+          de noter qu'il n'y a pas de réel raison pour laquelle nous avons utilisé le GP15 et GP26 plutôt que d'autres pins.
         </p>
 
-        <h2>Module Microphone Arduino Analogue MODUL2</h2>
-        <img class="img" src="../img/micro.jpg"></img>
         <p>
-          Le module microphone de Arduino comnposé de trois PIN que nous allons utiliser pour notre projet. Le 'AO' (Analog output) qui transmet 
-          le son enregistré, 'G' (Ground) et enfin l'alimentation, signalée par un '+'.
+          Le Raspberry Pi Pico H est le centre du talkie-walkie étant donné que c'est dans le chip de ce dernier que l'on effectue l'exécution du programe et tous 
+          les calculs relatif à la lecture des signaux éléctronique comme la radio (qui n'a pas été possible d'utiliser malheureusement) ou le haut-parleur. Au 
+          cours de ce projet nous avons fait usage du GP15 (pin20 selon la numérotation physique) pour l'entrée audio (depuis le micro), du GP26 (pin31) 
+          pour la sortie audio (vers le haut-parleur). Je ne me lancerais ici pas dans une explication detaillé du Pico H mais le gros à comprendre est que c'est une sorte 
+          mini-ordinateur qui peut lire, traiter et envoyer des signals éléctroniques.
+        </p>
+
+        <h2>Module Microphone Arduino Analogue MODUL2 (SE019)</h2>
+        <img class="img" src="../img/micro.jpg"></img>
+        <p class="comment">
+          Le module microphone comme vous le voyez ici possède quatre pins. Les plus intéressants sont le pin AO (analogue) et DO (digital). Expliqué ci-dessous.
+        </p>
+        <p>
+          Le module microphone de Arduino comnposé de quatre PIN que nous avons tous essayer d'utiliser à un moment de ce projet utiliser pour notre projet. Le 'AO' 
+          (Analog output) qui transmet le son enregistré, 'G' (Ground) et enfin l'alimentation, signalée par un '+'. Le pin AO transmet le son qu'il capture sous 
+          la forme d'un signal éléctronique qu'il nous est possible d'enregistré et de retransmettre à notre haut-parleur.
         </p>
 
         <h2>Amplificateur audio LM386</h2>
