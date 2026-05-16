@@ -59,7 +59,7 @@
 
 
         <h2>
-          Code 1 - micV1
+          Code original pour enregistrement du son - <code>micV1.py</code>
         </h2>
         <hr>
         <div class="div-code">
@@ -126,17 +126,163 @@
             led.off()
             print("Fin lecture")
           </code>
-      </div>
+        </div>
+      
         <hr>
 
         <p>
-          Le premier code (et tous les autres) ne sont pas particulièrement compliqué une fois que l'on a compris leur logique. On annonce au début du code deux variable: 
-          <code>SAMPLE_RATE</code> et <code>DURATION</code>. Le second est relativement implicite, et le premier donne simplement le nombre de mesure par seconde. Une fois 
-          ceci fais, le pico prépare la RAM où on va enregistré le signal audio (qui sera nommé <code>buffer</code> dans notre cas). Ensuite il lance la boucle d'enregistrement 
-          qui rajoute toutes les lectures du pin à <code>buffer</code>. Vous remarquerez des variables <code>min_val</code> et <code>max_val</code>, mais elle ne sont que 
-          là pour nous aider à débugger des problèmes de hardware, donc je ne me lancerais pas dans l'explication.
+        Le premier code (et tous les autres) ne sont pas particulièrement compliqué une fois que l'on a compris leur logique. On annonce au début du code deux variable: 
+        <code>SAMPLE_RATE</code> et <code>DURATION</code>. Le second est relativement implicite, et le premier donne simplement le nombre de mesure par seconde. Une fois 
+        ceci fais, le pico prépare la RAM où on va enregistré le signal audio (qui sera nommé <code>buffer</code> dans notre cas). Ensuite il lance la boucle d'enregistrement 
+        qui rajoute toutes les lectures du pin à <code>buffer</code>. Vous remarquerez des variables <code>min_val</code> et <code>max_val</code>, mais elle ne sont que 
+        là pour nous aider à débugger des problèmes de hardware, donc je ne me lancerais pas dans l'explication dans cette section. Ensuite on lance la boucle de lecture 
+        qui ne fait qu'envoyer les données stockées dans <code>buffer</code> au pin qui va vers le LM386.
+        </p>
+      
+        <hr>
+
+
+        <h2>
+          Code de debug hardware - <code>mic-File.py</code> et <code>graph-mic.py</code>
+        </h2>
+
+
+
+        <div class="div-code">
+          <code>
+            from machine import Pin, ADC
+            import time
+  
+            mic = ADC(Pin(26))
+            SAMPLE_RATE = 1500
+            DURATION    = 2
+            NUM_SAMPLES = SAMPLE_RATE * DURATION
+            PERIOD_US   = 1_000_000 // SAMPLE_RATE
+  
+            print("Démarre dans 2s — applaudis pendant l'enregistrement")
+            time.sleep(2)
+            print("REC...")
+  
+            samples = []
+            start = time.ticks_us()
+            for i in range(NUM_SAMPLES):
+                target = time.ticks_add(start, i * PERIOD_US)
+                while time.ticks_diff(target, time.ticks_us()) > 0:
+                    pass
+                samples.append(mic.read_u16())
+  
+            with open('mic1k.csv', 'w') as f:
+                for v in samples:
+                    f.write(str(v) + '\n')
+            print("Terminé")
+          </code>
+        </div>
+
+        <hr>
+
+        <div class="div-code">
+          <code>
+            import matplotlib.pyplot as plt
+
+            with open('mic1k.csv') as f:
+                values = [int(l.strip()) for l in f if l.strip()]
+
+            center = sum(values) // len(values)
+            ecarts = [abs(v - center) for v in values]
+            peak = max(ecarts)
+
+            print(f"Centre : {center}")
+            print(f"Pic max (écart) : {peak}")
+            print(f"Seuil conseillé (70%) : {int(peak * 0.7)}")
+
+            plt.figure(figsize=(14, 4))
+            plt.plot(ecarts, linewidth=0.5)
+            plt.axhline(int(peak * 0.7), color='red', linestyle='--', label=f'Seuil suggéré ({int(peak*0.7)})')
+            plt.xlabel('Échantillon (1500/s)')
+            plt.ylabel('Écart au centre')
+            plt.title('Amplitude du signal — clap visible?')
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig('mic1k.png')
+            plt.show()
+          </code>
+        </div>
+
+        <hr>
+
+        <p>
+          Le premier code essentiellement fait la même chose que le code décrit dans la partie 1, mais au lieu d'enregistrer le son pour le faire passer dans le haut-parleur, 
+          on l'enregistre dans un fichier <code>.csv</code>. Le fichier n'est qu'une série de nombre que l'on peut à l'aide du deuxième code qui utilise la library <code>matplotlib</code> 
+          pour dessiner des graphiques d'après une liste. Ce code a permis de créer nottament les graphiques que vous voyez sous la section micro de la page 
+          <a class="link" href="../Hardware/">hardware</a>. Dans le code numéro 2 ci-dessus <code>center</code>, <code>ecart</code> et <code>peak</code> sont de la même idée 
+          que <code>max_val</code> et <code>min_val</code> mais avec des fonction différentes.
         </p>
 
+        <h2>
+          Code détecteur de son - <code>clapbip.py</code>
+        </h2>
+
+        <hr>
+
+        <div class="div-code">
+          <code>
+            from machine import Pin, PWM
+            import time, math
+
+            # D0 du SE019
+            son = Pin(26, Pin.IN, Pin.PULL_DOWN)
+
+            # Haut-parleur
+            spk = PWM(Pin(15))
+            spk.freq(60000)
+            spk.duty_u16(32768)
+            led = Pin(25, Pin.OUT)
+
+            # Bip
+            SAMPLE_RATE = 8000
+            PERIOD_US   = 1_000_000 // SAMPLE_RATE
+            N    = SAMPLE_RATE // 1000
+            sine = [int(32768 + 16000 * math.sin(2 * math.pi * i / N)) for i in range(N)]
+            n_bip = SAMPLE_RATE * 200 // 1000
+
+            def jouer_bip():
+                led.on()
+                start = time.ticks_us()
+                for i in range(n_bip):
+                    target = time.ticks_add(start, i * PERIOD_US)
+                    while time.ticks_diff(target, time.ticks_us()) > 0:
+                        pass
+                    spk.duty_u16(sine[i % N])
+                spk.duty_u16(32768)
+                led.off()
+
+            COOLDOWN_MS  = 300
+            dernier_clap = time.ticks_ms()
+
+            print("En écoute — ajuste le potentiomètre du SE019 si besoin")
+
+            while True:
+                if son.value() == 1:
+                    maintenant = time.ticks_ms()
+                    if time.ticks_diff(maintenant, dernier_clap) > COOLDOWN_MS:
+                        print("Clap détecté!")
+                        dernier_clap = maintenant
+                        jouer_bip()
+                time.sleep_ms(2)
+          </code>
+        </div>
+
+        <hr>
+
+        <p>
+          Il est important de noter que ce code est très similaire au premier. À la différence que <code>son</code> peut soit avoir une valeur de 1 ou de 0, 
+          contrairement au signal analogue qui lui devait être étudié. Il faut également voir que il n'y a pas d'enregistrement et que le traitement des données 
+          s'effectue en temps réel (avec un minuscule décalage parce-que rien n'est instantané si on veut chipoter). Le bip est une fonction sinusoïdale, et je ne 
+          vais pas me lancer dans une explication physique, mais le son est une onde et les ondes sont le mieux décrite avec des fonction trigonométriques comme 
+          un sinus ou un cosinus. La fonction <code>jouer_bip</code> quand à elle ne fait que jouer la liste <code>sine</code>, que l'on a créer plus haut, avec le GP15. 
+          La boucle <code>while True</code> va simplement vérifier en permanance si le pin GP26 reçoit un signal du microphone, et si il reçoit un signal il exécute la 
+          fonction <code>jouer_bip</code>.
+        </p>
 
       </div>
     </div>

@@ -19,7 +19,7 @@ for i in range(NUM_SAMPLES):
         pass
     samples.append(mic.read_u16())
 
-with open('mic8k.csv', 'w') as f:
+with open('mic1k.csv', 'w') as f:
     for v in samples:
         f.write(str(v) + '\n')
 print("Terminé")
