@@ -41,14 +41,14 @@
         <h2>Explication du software</h2>
 
         <p>
-          Sur cette page nous allons vous expliquer les différents codes que nous avons utilisé afin de faire fonctionner notre système, c'est à dire, également les codes 
-          qui ont servi à faire du <i>troubleshooting</i> (comme on dit dans le millieu). Parmis ces codes on retrouve trois qui sont particulièrement important:
+          Sur cette page, nous allons vous expliquer les différents codes que nous avons utilisés afin de faire fonctionner notre système, c'est-à-dire, également les codes 
+          qui ont servi à faire du <i>troubleshooting</i> (comme on dit dans le milieu). Parmi ces codes, on retrouve trois qui sont particulièrement important:
           <ul>
             <li>
-              1e: qui était originalement sensé enregistrer le signal du micro et le renvoyer plus tard au haut-parleur.
+              1e: qui était originellement censé enregistrer le signal du micro et le renvoyer plus tard au haut-parleur.
             </li>
             <li>
-              2e: qui lui m'a servi à lire les entrée audio et les redisposer sous un fichier csv qu'on pouvait ensuite transformer en graphique.
+              2e: qui lui m'a servi à lire les entrées audio et les redisposer sous un fichier csv qu'on pouvait ensuite transformer en graphique.
             </li>
             <li>
               3e: qui est le code final joue un son (une fonction sinusoïdale) dans le cas où il reçoit un signal du micro.
@@ -131,11 +131,11 @@
         <hr>
 
         <p>
-        Le premier code (et tous les autres) ne sont pas particulièrement compliqué une fois que l'on a compris leur logique. On annonce au début du code deux variable: 
-        <code>SAMPLE_RATE</code> et <code>DURATION</code>. Le second est relativement implicite, et le premier donne simplement le nombre de mesure par seconde. Une fois 
-        ceci fais, le pico prépare la RAM où on va enregistré le signal audio (qui sera nommé <code>buffer</code> dans notre cas). Ensuite il lance la boucle d'enregistrement 
-        qui rajoute toutes les lectures du pin à <code>buffer</code>. Vous remarquerez des variables <code>min_val</code> et <code>max_val</code>, mais elle ne sont que 
-        là pour nous aider à débugger des problèmes de hardware, donc je ne me lancerais pas dans l'explication dans cette section. Ensuite on lance la boucle de lecture 
+        Le premier code (et tous les autres) ne sont pas particulièrement compliqué une fois que l'on a compris leur logique. On annonce au début du code deux variables : 
+        <code>SAMPLE_RATE</code> et <code>DURATION</code>. Le second est relativement implicite, et le premier donne simplement le nombre de mesures par seconde. Une fois 
+        ceci fais, le pico prépare la RAM où on va enregistrer le signal audio (qui sera nommé <code>buffer</code> dans notre cas). Ensuite il lance la boucle d'enregistrement 
+        qui rajoute toutes les lectures du pin à <code>buffer</code>. Vous remarquerez des variables <code>min_val</code> et <code>max_val</code>, mais elles ne sont que 
+        là pour nous aider à débugger des problèmes de hardware, donc je ne me lancerai pas dans l'explication dans cette section. Ensuite on lance la boucle de lecture 
         qui ne fait qu'envoyer les données stockées dans <code>buffer</code> au pin qui va vers le LM386.
         </p>
       
@@ -211,11 +211,11 @@
         <hr>
 
         <p>
-          Le premier code essentiellement fait la même chose que le code décrit dans la partie 1, mais au lieu d'enregistrer le son pour le faire passer dans le haut-parleur, 
-          on l'enregistre dans un fichier <code>.csv</code>. Le fichier n'est qu'une série de nombre que l'on peut à l'aide du deuxième code qui utilise la library <code>matplotlib</code> 
-          pour dessiner des graphiques d'après une liste. Ce code a permis de créer nottament les graphiques que vous voyez sous la section micro de la page 
+          Le premier code fait essentiellement la même chose que le code décrit dans la partie 1, mais au lieu d'enregistrer le son pour le faire passer dans le haut-parleur, 
+          on l'enregistre dans un fichier <code>.csv</code>. Le fichier n'est qu'une série de nombres que l'on peut, à l'aide du deuxième code qui utilise la library <code>matplotlib</code> ,
+          utilisé pour dessiner des graphiques d'après une liste. Ce code a permis de créer notamment les graphiques que vous voyez sous la section micro de la page 
           <a class="link" href="../Hardware/">hardware</a>. Dans le code numéro 2 ci-dessus <code>center</code>, <code>ecart</code> et <code>peak</code> sont de la même idée 
-          que <code>max_val</code> et <code>min_val</code> mais avec des fonction différentes.
+          que <code>max_val</code> et <code>min_val</code> mais avec des fonctions différentes.
         </p>
 
         <h2>
@@ -275,12 +275,12 @@
         <hr>
 
         <p>
-          Il est important de noter que ce code est très similaire au premier. À la différence que <code>son</code> peut soit avoir une valeur de 1 ou de 0, 
-          contrairement au signal analogue qui lui devait être étudié. Il faut également voir que il n'y a pas d'enregistrement et que le traitement des données 
-          s'effectue en temps réel (avec un minuscule décalage parce-que rien n'est instantané si on veut chipoter). Le bip est une fonction sinusoïdale, et je ne 
-          vais pas me lancer dans une explication physique, mais le son est une onde et les ondes sont le mieux décrite avec des fonction trigonométriques comme 
-          un sinus ou un cosinus. La fonction <code>jouer_bip</code> quand à elle ne fait que jouer la liste <code>sine</code>, que l'on a créer plus haut, avec le GP15. 
-          La boucle <code>while True</code> va simplement vérifier en permanance si le pin GP26 reçoit un signal du microphone, et si il reçoit un signal il exécute la 
+          Il est important de noter que ce code est très similaire au premier. À la différence que <code>son</code> peut uniquement avoir une valeur de 1 ou de 0, 
+          contrairement au signal analogue qui, lui, devait être étudié. Il faut également voir qu'il n'y a pas d'enregistrement et que le traitement des données 
+          s'effectue en temps réel (avec un minuscule décalage parce que rien n'est instantané si on veut chipoter). Le bip est une fonction sinusoïdale, et je ne 
+          vais pas me lancer dans une explication physique, mais le son est une onde et les ondes sont le mieux décrites avec des fonctions trigonométriques comme 
+          un sinus ou un cosinus. La fonction <code>jouer_bip</code> quant à elle, ne fait que jouer la liste <code>sine</code>, que l'on a créée plus haut, avec le GP15. 
+          La boucle <code>while True</code> va simplement vérifier en permanence si le pin GP26 reçoit un signal du microphone, et s'il reçoit un signal, il exécute la 
           fonction <code>jouer_bip</code>.
         </p>
 
