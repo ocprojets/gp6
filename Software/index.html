@@ -38,6 +38,100 @@
       <div class ="content-main">
         <title>Projet GP06 - Software</title>
         <h1>Projet informatique 2026, 2e semestre - Nuri Grasser et Raphael Aye</h1>
+        <h2>Explication du software</h2>
+
+        <p>
+          Sur cette page nous allons vous expliquer les différents codes que nous avons utilisé afin de faire fonctionner notre système, c'est à dire, également les codes 
+          qui ont servi à faire du <i>troubleshooting</i> (comme on dit dans le millieu). Parmis ces codes on retrouve trois qui sont particulièrement important:
+          <ul>
+            <li>
+              1e: qui était originalement sensé enregistrer le signal du micro et le renvoyer plus tard au haut-parleur.
+            </li>
+            <li>
+              2e: qui lui m'a servi à lire les entrée audio et les redisposer sous un fichier csv qu'on pouvait ensuite transformer en graphique.
+            </li>
+            <li>
+              3e: qui est le code final joue un son (une fonction sinusoïdale) dans le cas où il reçoit un signal du micro.
+            </li>
+          </ul>
+          Nous allons donc dans cet ordre expliquer chacun de ces codes.
+        </p>
+
+
+        <h2>
+          Code 1 - micV1
+        </h2>
+        <hr>
+        <code>
+          from machine import Pin, ADC, PWM
+          import array
+          import time
+
+          # === Paramètres ===
+          SAMPLE_RATE = 8000          # 8 kHz : voix correcte, peu gourmand
+          DURATION    = 3             # secondes
+          NUM_SAMPLES = SAMPLE_RATE * DURATION
+          PERIOD_US   = 1_000_000 // SAMPLE_RATE   # 125 µs entre samples
+
+          # === Hardware ===
+          mic = ADC(Pin(26))                  # GP26 = ADC0, entrée micro /// pin20 physique
+          spk = PWM(Pin(15))                  # GP15 vers filtre RC + LM386 /// pin31 physique
+          spk.freq(60000)                    # porteuse 60 kHz, inaudible
+          spk.duty_u16(32768)                 # silence = duty 50%
+
+          led = Pin(25, Pin.OUT)              # Pico classique. Si Pico W : Pin("LED", Pin.OUT)
+
+          # Buffer en RAM (48 KB pour 3s à 8 kHz, OK sur Pico)
+          buffer = array.array('H', [0] * NUM_SAMPLES)
+
+          # === Enregistrement ===
+          print("Démarrage dans 1 seconde...")
+          time.sleep(1)
+          led.on()
+          print(">> REC : parle maintenant pendant 3 secondes")
+
+          start = time.ticks_us()
+          for i in range(NUM_SAMPLES):
+              target = time.ticks_add(start, i * PERIOD_US)
+              while time.ticks_diff(target, time.ticks_us()) > 0:
+                  pass
+              buffer[i] = mic.read_u16()
+
+
+          min_val = min(buffer)
+          max_val = max(buffer)
+          avg_val = sum(buffer) // len(buffer)
+          variance = max_val - min_val
+
+          print(f"Min={min_val}  Max={max_val}  Avg={avg_val}  Écart={variance}")
+
+          led.off()
+          print("Fin enregistrement")
+          time.sleep(1)
+
+
+          # === Lecture ===
+          led.on()
+          print(">> PLAY")
+
+
+          for i in range(NUM_SAMPLES):
+              target = time.ticks_add(start, i * PERIOD_US)
+              while time.ticks_diff(target, time.ticks_us()) > 0:
+                  pass
+              spk.duty_u16(buffer[i])
+
+          spk.duty_u16(32768)                 # retour silence
+          led.off()
+          print("Fin lecture")
+        </code>
+        <hr>
+
+        <p>
+          Ci-dessus le code 
+        </p>
+
+
       </div>
     </div>
   </body>

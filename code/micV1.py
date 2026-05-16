@@ -49,28 +49,6 @@ time.sleep(1)
 led.on()
 print(">> PLAY")
 
-# peak = 0
-# baseline = 65535
-# 
-# for i in range(NUM_SAMPLES):
-#     v = buffer[i]
-#     if v > 100:             # ignorer le silence écrêté
-#         if v > peak:
-#             peak = v
-#         if v < baseline:
-#             baseline = v
-# 
-# center = (peak + baseline) // 2
-# amplitude = peak - center
-# 
-# if amplitude < 1:
-#     amplitude = 1
-# 
-# gain = 26000 // amplitude   # cibler ~80% de la plage
-# 
-# print(f"center={center} peak={peak} gain=x{gain}")
-
-# Modifier le buffer en place, sans créer de nouvelle liste
 
 for i in range(NUM_SAMPLES):
     target = time.ticks_add(start, i * PERIOD_US)
