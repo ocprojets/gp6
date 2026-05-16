@@ -62,73 +62,79 @@
           Code 1 - micV1
         </h2>
         <hr>
-        <code>
-          from machine import Pin, ADC, PWM
-          import array
-          import time
+        <div class="div-code">
+          <code>
+            from machine import Pin, ADC, PWM
+            import array
+            import time
 
-          # === Paramètres ===
-          SAMPLE_RATE = 8000          # 8 kHz : voix correcte, peu gourmand
-          DURATION    = 3             # secondes
-          NUM_SAMPLES = SAMPLE_RATE * DURATION
-          PERIOD_US   = 1_000_000 // SAMPLE_RATE   # 125 µs entre samples
+            # === Paramètres ===
+            SAMPLE_RATE = 8000          # 8 kHz : voix correcte, peu gourmand
+            DURATION    = 3             # secondes
+            NUM_SAMPLES = SAMPLE_RATE * DURATION
+            PERIOD_US   = 1_000_000 // SAMPLE_RATE   # 125 µs entre samples
 
-          # === Hardware ===
-          mic = ADC(Pin(26))                  # GP26 = ADC0, entrée micro /// pin20 physique
-          spk = PWM(Pin(15))                  # GP15 vers filtre RC + LM386 /// pin31 physique
-          spk.freq(60000)                    # porteuse 60 kHz, inaudible
-          spk.duty_u16(32768)                 # silence = duty 50%
+            # === Hardware ===
+            mic = ADC(Pin(26))                  # GP26 = ADC0, entrée micro /// pin20 physique
+            spk = PWM(Pin(15))                  # GP15 vers filtre RC + LM386 /// pin31 physique
+            spk.freq(60000)                    # porteuse 60 kHz, inaudible
+            spk.duty_u16(32768)                 # silence = duty 50%
 
-          led = Pin(25, Pin.OUT)              # Pico classique. Si Pico W : Pin("LED", Pin.OUT)
+            led = Pin(25, Pin.OUT)              # Pico classique. Si Pico W : Pin("LED", Pin.OUT)
 
-          # Buffer en RAM (48 KB pour 3s à 8 kHz, OK sur Pico)
-          buffer = array.array('H', [0] * NUM_SAMPLES)
+            # Buffer en RAM (48 KB pour 3s à 8 kHz, OK sur Pico)
+            buffer = array.array('H', [0] * NUM_SAMPLES)
 
-          # === Enregistrement ===
-          print("Démarrage dans 1 seconde...")
-          time.sleep(1)
-          led.on()
-          print(">> REC : parle maintenant pendant 3 secondes")
+            # === Enregistrement ===
+            print("Démarrage dans 1 seconde...")
+            time.sleep(1)
+            led.on()
+            print(">> REC : parle maintenant pendant 3 secondes")
 
-          start = time.ticks_us()
-          for i in range(NUM_SAMPLES):
-              target = time.ticks_add(start, i * PERIOD_US)
-              while time.ticks_diff(target, time.ticks_us()) > 0:
-                  pass
-              buffer[i] = mic.read_u16()
-
-
-          min_val = min(buffer)
-          max_val = max(buffer)
-          avg_val = sum(buffer) // len(buffer)
-          variance = max_val - min_val
-
-          print(f"Min={min_val}  Max={max_val}  Avg={avg_val}  Écart={variance}")
-
-          led.off()
-          print("Fin enregistrement")
-          time.sleep(1)
+            start = time.ticks_us()
+            for i in range(NUM_SAMPLES):
+                target = time.ticks_add(start, i * PERIOD_US)
+                while time.ticks_diff(target, time.ticks_us()) > 0:
+                    pass
+                buffer[i] = mic.read_u16()
 
 
-          # === Lecture ===
-          led.on()
-          print(">> PLAY")
+            min_val = min(buffer)
+            max_val = max(buffer)
+            avg_val = sum(buffer) // len(buffer)
+            variance = max_val - min_val
+
+            print(f"Min={min_val}  Max={max_val}  Avg={avg_val}  Écart={variance}")
+
+            led.off()
+            print("Fin enregistrement")
+            time.sleep(1)
 
 
-          for i in range(NUM_SAMPLES):
-              target = time.ticks_add(start, i * PERIOD_US)
-              while time.ticks_diff(target, time.ticks_us()) > 0:
-                  pass
-              spk.duty_u16(buffer[i])
+            # === Lecture ===
+            led.on()
+            print(">> PLAY")
 
-          spk.duty_u16(32768)                 # retour silence
-          led.off()
-          print("Fin lecture")
-        </code>
+
+            for i in range(NUM_SAMPLES):
+                target = time.ticks_add(start, i * PERIOD_US)
+                while time.ticks_diff(target, time.ticks_us()) > 0:
+                    pass
+                spk.duty_u16(buffer[i])
+
+            spk.duty_u16(32768)                 # retour silence
+            led.off()
+            print("Fin lecture")
+          </code>
+      </div>
         <hr>
 
         <p>
-          Ci-dessus le code 
+          Le premier code (et tous les autres) ne sont pas particulièrement compliqué une fois que l'on a compris leur logique. On annonce au début du code deux variable: 
+          <code>SAMPLE_RATE</code> et <code>DURATION</code>. Le second est relativement implicite, et le premier donne simplement le nombre de mesure par seconde. Une fois 
+          ceci fais, le pico prépare la RAM où on va enregistré le signal audio (qui sera nommé <code>buffer</code> dans notre cas). Ensuite il lance la boucle d'enregistrement 
+          qui rajoute toutes les lectures du pin à <code>buffer</code>. Vous remarquerez des variables <code>min_val</code> et <code>max_val</code>, mais elle ne sont que 
+          là pour nous aider à débugger des problèmes de hardware, donc je ne me lancerais pas dans l'explication.
         </p>
 
 
