@@ -84,10 +84,9 @@
         </p>
 
         <img class="img" src="../img/micro-module-schematic.png">
-        <p class="comment">
-          Il faut noter que ce schematic n'est pas 100% juste. Le potentiomètre ici ne devrais pas influencer le pin AO, mais après avoir testé, il s'avère que ce pin est 
-          bel et bien influencer par ce potentiomètre. Le reste du schéma est parfaitement correct. En bref, le potentiomètre permet de faire 1. varier la différence entre 
-          un signal audio fort et faible pour le pin A0, et 2. si on utilise le pin D0 il sert à changer le niveau sonore nécessaire pour envoyer un signal éléctrique.
+        <p class="comment">          
+          Le reste du schéma est parfaitement correct. En bref, le potentiomètre permet de faire 1. varier la différence entre un signal audio fort 
+          et faible pour le pin A0, et 2. si on utilise le pin D0 il sert à changer le niveau sonore nécessaire pour envoyer un signal éléctrique.
         </p>
 
         <p>
@@ -138,8 +137,9 @@
           Le haut-parleur possède un pin ground et un pin input. Pas grand chose d'autre à dire.
         </p>
 
-        <h2>Filtre low-pass</h2>
 
+
+        <h2>Filtre low-pass (Filtre RC)</h2>
         <p>
           Donner une explication détaillée d'un filtre low-pass serait trop longue pour ce site internet donc je vais abréger: un filtre low-pass supprime toutes les fréquences 
           supérieurs à une certaine fréquence selon le design du filtre. En règle générale un filtre low-pass est constitué d'un condensateur (deux plaques conductrice proches 
@@ -147,6 +147,36 @@
           résistance 1.2kΩ.
         </p>
         
+        <img class="img" src="../img/filtre-low-pass.png">
+        <p class="comment">
+          Ci-dessus le filtre RC que j'ai utilisé pour l'amplificateur audio lorsque le microphone était en A0. La fréquence de coupure est donnée par la formule: Fc=1/(2π*R*C), où 'R' est la 
+          résistance, et 'C' le condensateur. Dans notre cas: Fc=1/(2π * 1.2*1000 [Ω] * 1e-8 [F])=13kHz (noter que la voix humaine est entre 0.3-3kHz donc pas de problème ici).
+        </p>
+
+
+
+
+        <h2>Circuit final</h2>
+        <img class="img" src="../img/circuit-final.png">
+        <p class="comment">
+          Vous trouvez ci-dessus le schéma du montage final, vous verrez qu'il n'y pas le module radio, puisque l'un des deux ne fonctionnant plus nous ne pouvions 
+          pas les utilisés. Le circuit final est un détecteur de clap qui produit un bip si c'est le cas. Le programme est détaillé <a class="link" href="../Software/">ici</a>.
+        </p>
+
+        <p>
+          Le circuit final est relativement simple du moins en apparence. Il a demandé beaucoup d'expérimentation et de tatonage afin de correctement relier certains 
+          composant puisque souvent il y avait des petites imprécisions (p.ex: j'avais oublier au début de brancher le 'input -' du LM386 sur le ground). Vous noterez la 
+          présence d'un potentiomètre avant l'entrée du signal dans le LM386, celui-ci sert à ajuster le son. On pourrait faire sans, mais je l'ai ajouter histoire d'avoir 
+          un moyen de régler le son sans modifier le gain, sans oublier que le potentiomètre est intégré dans la documentation officielle (c.f. schéma 2 du LM386).
+          <br/>
+          Maintenant une brève explication du schéma. Le micro enregistre le son, il envoie ce signal au pin GP26 depuis son pin D0, le raspberry, s'il détecte un signal 
+          envoie depuis le pin GP15 une fonction sinusoïdale (ce qui correspond à un bip régulier). Ce signal passe à travers le filtre RC, que j'ai expliqué en détail 
+          dans la partie précédente. Il faut noter que ce filtre, dans notre cas, sert à atténuer les signaux fort du PWM afin que le son ne se noie pas, si on enlève ce 
+          dernier on aura du bruit pur, ce qui certes permet de savoir si on a tapé des mains, mais ce n'est pas super pro. Une fois le filtre passé le signal passe à 
+          travers le filtre, et rentre dans l'amplificateur audio qui est réglé pour un gain de 20 (c.f. schéma 2 du LM386). Depuis là, le signal de sortie passe à travers 
+          un condensateur 220uF et entre dans le haut-parleur.
+        </p>
+
 
       </div>
 
