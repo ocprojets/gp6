@@ -174,7 +174,8 @@
           dans la partie précédente. Il faut noter que ce filtre, dans notre cas, sert à atténuer les signaux fort du PWM afin que le son ne se noie pas, si on enlève ce 
           dernier on aura du bruit pur, ce qui certes permet de savoir si on a tapé des mains, mais ce n'est pas super pro. Une fois le filtre passé le signal passe à 
           travers le filtre, et rentre dans l'amplificateur audio qui est réglé pour un gain de 20 (c.f. schéma 2 du LM386). Depuis là, le signal de sortie passe à travers 
-          un condensateur 220uF et entre dans le haut-parleur.
+          un condensateur 220uF, qui sert juste à supprimé des petits bruits de fond: on pourrait faire sans mais c'est de la qualité en plus donc 
+          on le garde quand même. Et au final, on il entre dans le haut-parleur pour jouer le son.
         </p>
 
 
